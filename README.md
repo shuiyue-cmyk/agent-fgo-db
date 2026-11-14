@@ -1,6 +1,32 @@
 # fgo.wiki 本地知识库
 
-这个目录把 Mooncell（fgo.wiki）的公开正文同步到本地 SQLite，并提供中文全文检索。后续提问时，Codex 会先查本地库；需要时再读取命中的原始维基文本和页面链接。
+这个仓库把 Mooncell（fgo.wiki）的公开正文同步到本地 SQLite，并提供中文全文检索。它同时是一个 Agent Skill：安装后，Claude Code、Codex 等支持 Skill 的 AI agent 在回答 FGO 问题时会先查本地库，需要时再读取命中的原始维基文本和页面链接。
+
+## 作为 Skill 安装
+
+把仓库克隆到 agent 的 skills 目录，文件夹名必须是 `fgo-wiki-kb`（与 `SKILL.md` 里的 `name` 一致）。
+
+Claude Code：
+
+```bash
+git clone https://github.com/shuiyue-cmyk/agent-fgo-db ~/.claude/skills/fgo-wiki-kb
+```
+
+Codex：
+
+```bash
+git clone https://github.com/shuiyue-cmyk/agent-fgo-db ~/.codex/skills/fgo-wiki-kb
+```
+
+其他遵循 [Agent Skills 规范](https://agentskills.io/specification)的 agent，克隆到它各自的 skills 目录即可。也可以用 [skills CLI](https://github.com/vercel-labs/skills) 安装，`-a` 指定 agent，`-g` 表示装到用户目录：
+
+```bash
+npx skills add shuiyue-cmyk/agent-fgo-db -g -a claude-code
+```
+
+安装后重启 agent，直接问 FGO 相关问题即可。第一次使用时 agent 会发现数据库还不存在，征得同意后执行一次完整同步（约半小时，生成约 600 MiB 的 `fgo_wiki.sqlite3`）；也可以自己先按下文「常用命令」跑一遍。
+
+数据库默认生成在 skill 目录里。想放到别处，或让多个 agent 共用一份，把环境变量 `FGO_KB_DB` 设为数据库文件的路径。用 skills CLI 安装时建议这样做，免得重装 skill 时数据库跟着目录一起被替换。
 
 ## 当前范围
 
@@ -15,7 +41,7 @@
 
 > 本仓库只包含脚本，不包含数据库文件（`fgo_wiki.sqlite3` 约 600 MiB，超过 GitHub 单文件上限）。克隆后先执行一次完整同步在本地生成数据库，按默认 0.5 秒请求间隔大约需要半小时。只依赖 Python 3.11+ 标准库，装有 `requests` 时会自动使用。
 
-在 PowerShell 中进入仓库目录后，首次完整同步：
+以下命令以 PowerShell 为例，macOS / Linux 把 `python .\fgo_kb.py` 换成 `python3 fgo_kb.py`。进入仓库（skill）目录后，首次完整同步：
 
 ```powershell
 python .\fgo_kb.py sync --full --delay 0.5

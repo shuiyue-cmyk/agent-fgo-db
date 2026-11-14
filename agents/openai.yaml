@@ -1,0 +1,4 @@
+interface:
+  display_name: "FGO Wiki Knowledge Base"
+  short_description: "Search a local Mooncell database for FGO facts"
+  default_prompt: "Use $fgo-wiki-kb to answer this Fate/Grand Order question from the local Mooncell knowledge base."

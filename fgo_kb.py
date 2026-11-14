@@ -39,7 +39,7 @@ if hasattr(sys.stderr, "reconfigure"):
 
 
 ROOT = Path(__file__).resolve().parent
-DEFAULT_DB = ROOT / "fgo_wiki.sqlite3"
+DEFAULT_DB = Path(os.environ.get("FGO_KB_DB") or ROOT / "fgo_wiki.sqlite3")
 API_URL = os.environ.get("FGO_WIKI_API_URL", "https://fgo.wiki/api.php")
 SOURCE_ROOT = "https://fgo.wiki"
 LICENSE_NAME = "CC BY-NC-SA 4.0"
